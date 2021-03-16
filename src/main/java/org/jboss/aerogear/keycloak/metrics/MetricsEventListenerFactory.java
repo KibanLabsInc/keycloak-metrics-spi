@@ -31,6 +31,7 @@ public class MetricsEventListenerFactory implements EventListenerProviderFactory
         // TODO: Init the clients and providers
 
         session.getTransactionManager().commit();
+        session.close();
     }
 
     @Override

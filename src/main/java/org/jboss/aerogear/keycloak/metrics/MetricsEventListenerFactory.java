@@ -12,13 +12,12 @@ public class MetricsEventListenerFactory implements EventListenerProviderFactory
 
     @Override
     public EventListenerProvider create(KeycloakSession session) {
-        metricsEventListener = new MetricsEventListener();
         return metricsEventListener;
     }
 
     @Override
     public void init(Config.Scope config) {
-        // nothing to do
+        metricsEventListener = new MetricsEventListener();
     }
 
     @Override

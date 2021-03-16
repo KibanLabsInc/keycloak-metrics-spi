@@ -40,6 +40,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldRegisterCountersForAllKeycloakEvents() {
+        PrometheusExporter.instance().initRealm("myrealm");
         int userEvents = EventType.values().length;
         int adminEvents = OperationType.values().length;
 
@@ -52,6 +53,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountLoginAttemptsForSuccessfulAndFailedAttempts() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with LOGIN event
         final Event login1 = createEvent(EventType.LOGIN, DEFAULT_REALM, "THE_CLIENT_ID");
         PrometheusExporter.instance().recordLogin(login1);
@@ -67,6 +69,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountLoginWhenIdentityProviderIsDefined() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         final Event login1 = createEvent(EventType.LOGIN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordLogin(login1);
         assertMetric("keycloak_logins", 1, tuple("provider", "THE_ID_PROVIDER"), tuple("client_id", "THE_CLIENT_ID"));
@@ -78,6 +81,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountLoginWhenIdentityProviderIsNotDefined() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         final Event login1 = createEvent(EventType.LOGIN);
         PrometheusExporter.instance().recordLogin(login1);
         assertMetric("keycloak_logins", 1, tuple("provider", "keycloak"), tuple("client_id", "THE_CLIENT_ID"));
@@ -89,6 +93,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountLoginsFromDifferentProviders() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event login1 = createEvent(EventType.LOGIN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordLogin(login1);
@@ -103,6 +108,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldRecordLoginsPerRealm() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // realm 1
         final Event login1 = createEvent(EventType.LOGIN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordLogin(login1);
@@ -117,6 +123,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountLoginError() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.LOGIN_ERROR, DEFAULT_REALM, "THE_CLIENT_ID", "user_not_found", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordLoginError(event1);
@@ -131,6 +138,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountRegister() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.REGISTER, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordRegistration(event1);
@@ -145,6 +153,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountRefreshTokens() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.REFRESH_TOKEN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordRefreshToken(event1);
@@ -159,6 +168,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountRefreshTokensErrors() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.REFRESH_TOKEN_ERROR, DEFAULT_REALM, "THE_CLIENT_ID", "user_not_found", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordRefreshTokenError(event1);
@@ -173,6 +183,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountClientLogins() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.CLIENT_LOGIN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordClientLogin(event1);
@@ -187,6 +198,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountClientLoginAttempts() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.CLIENT_LOGIN_ERROR, DEFAULT_REALM, "THE_CLIENT_ID", "user_not_found", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordClientLoginError(event1);
@@ -201,6 +213,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountCodeToTokens() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.CODE_TO_TOKEN, DEFAULT_REALM, "THE_CLIENT_ID", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordCodeToToken(event1);
@@ -215,6 +228,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyCountCodeToTokensErrors() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         // with id provider defined
         final Event event1 = createEvent(EventType.CODE_TO_TOKEN_ERROR, DEFAULT_REALM, "THE_CLIENT_ID", "user_not_found", tuple("identity_provider", "THE_ID_PROVIDER"));
         PrometheusExporter.instance().recordCodeToTokenError(event1);
@@ -229,6 +243,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyRecordGenericEvents() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         final Event event1 = createEvent(EventType.UPDATE_EMAIL);
         PrometheusExporter.instance().recordGenericEvent(event1);
         assertMetric("keycloak_user_event_UPDATE_EMAIL", 1);
@@ -244,6 +259,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyRecordGenericAdminEvents() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         final AdminEvent event1 = new AdminEvent();
         event1.setOperationType(OperationType.ACTION);
         event1.setResourceType(ResourceType.AUTHORIZATION_SCOPE);
@@ -265,6 +281,7 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyRecordResponseDurations() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         PrometheusExporter.instance().recordRequestDuration(5, "GET");
         assertGenericMetric("keycloak_request_duration_count", 1, tuple("method", "GET"));
         assertGenericMetric("keycloak_request_duration_sum", 5, tuple("method", "GET"));
@@ -272,12 +289,14 @@ public class PrometheusExporterTest {
 
     @Test
     public void shouldCorrectlyRecordResponseErrors() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         PrometheusExporter.instance().recordResponseError(500, "POST");
         assertGenericMetric("keycloak_response_errors", 1, tuple("code", "500"), tuple("method", "POST"));
     }
 
     @Test
     public void shouldTolerateNullLabels() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         final Event nullEvent = new Event();
         nullEvent.setClientId(null);
         nullEvent.setError(null);
@@ -287,10 +306,18 @@ public class PrometheusExporterTest {
     }
 
     @Test
+    public void shouldReturnZeroOnNoRecordedGenericMetricEvent() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
+        assertMetric("keycloak_user_event_UPDATE_EMAIL", 0);
+    }
+
+    @Test
     public void shouldBuildPushgateway() throws IOException {
         final String envVar = "PROMETHEUS_PUSHGATEWAY_ADDRESS";
         final String address = "localhost:9091";
         environmentVariables.set(envVar, address);
+
+        PrometheusExporter.instance().initRealm("myrealm");
         Assert.assertNotNull(PrometheusExporter.instance().PUSH_GATEWAY);
     }
 
@@ -299,11 +326,14 @@ public class PrometheusExporterTest {
         final String envVar = "PROMETHEUS_PUSHGATEWAY_ADDRESS";
         final String address = "https://localhost:9091";
         environmentVariables.set(envVar, address);
+
+        PrometheusExporter.instance().initRealm("myrealm");
         Assert.assertNotNull(PrometheusExporter.instance().PUSH_GATEWAY);
     }
 
     @Test
     public void shouldNotBuildPushgateway() throws IOException {
+        PrometheusExporter.instance().initRealm("myrealm");
         Assert.assertNull(PrometheusExporter.instance().PUSH_GATEWAY);
     }
 

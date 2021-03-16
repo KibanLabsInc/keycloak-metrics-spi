@@ -11,6 +11,10 @@ public class MetricsEventListener implements EventListenerProvider {
 
     private final static Logger logger = Logger.getLogger(MetricsEventListener.class);
 
+    public void initRealm(String realmId) {
+        PrometheusExporter.instance().initRealm(realmId);
+    }
+
     @Override
     public void onEvent(Event event) {
         logEventDetails(event);
@@ -49,6 +53,7 @@ public class MetricsEventListener implements EventListenerProvider {
             default:
                 PrometheusExporter.instance().recordGenericEvent(event);
         }
+        // TODO: On new realm event, init the realm
     }
 
     @Override

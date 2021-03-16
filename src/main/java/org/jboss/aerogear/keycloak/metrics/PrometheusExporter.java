@@ -11,6 +11,7 @@ import org.keycloak.events.Event;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
+import org.keycloak.events.admin.ResourceType;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -173,6 +174,27 @@ public final class PrometheusExporter {
 
         // Initialize the default metrics for the hotspot VM
         DefaultExports.initialize();
+    }
+
+    public void initRealm(String realmId) {
+        // TODO: Init other counters
+
+        // Init generic user counters for all user events
+        for (EventType type : EventType.values()) {
+            if (type.equals(EventType.LOGIN) || type.equals(EventType.LOGIN_ERROR) || type.equals(EventType.REGISTER)) {
+                continue;
+            }
+            final String counterName = buildCounterName(type);
+            counters.get(counterName).labels(realmId);
+        }
+
+        // Init generic admin counters for all admin events
+        for (OperationType type : OperationType.values()) {
+            final String counterName = buildCounterName(type);
+            for (ResourceType resourceType : ResourceType.values()) {
+                counters.get(counterName).labels(realmId, resourceType.name());
+            }
+        }
     }
 
     public static synchronized PrometheusExporter instance() {

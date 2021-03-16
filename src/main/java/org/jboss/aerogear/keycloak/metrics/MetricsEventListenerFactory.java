@@ -27,10 +27,16 @@ public class MetricsEventListenerFactory implements EventListenerProviderFactory
 
     @Override
     public void postInit(KeycloakSessionFactory factory) {
+        KeycloakSession session = factory.create();
+        session.getTransactionManager().begin();
+
         ProviderFactory<RealmProvider> providerFactory = factory.getProviderFactory(RealmProvider.class);
-        RealmProvider realmProvider = providerFactory.create(factory.create());
+        RealmProvider realmProvider = providerFactory.create(session);
         realmProvider.getRealmsStream().forEach(model -> metricsEventListener.initRealm(model.getId()));
+
         // TODO: Init the clients and providers
+
+        session.getTransactionManager().commit();
     }
 
     @Override
